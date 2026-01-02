@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineSphere - Movie Recommendations</title>
+    <link rel="stylesheet" href="project1.css">
+</head>
+<body data-theme="dark">
+
+    <div class="gradient-bg"></div>
+    <div class="container">
+        <header>
+            <div class="logo">🎬 CineSphere</div>
+            <div class="header-actions">
+                <nav class="nav">
+                    <button class="nav-btn active" onclick="showPage('home')">Home</button>
+                    <button class="nav-btn" onclick="showPage('recommendations')">For You</button>
+                    <button class="nav-btn" onclick="showPage('watchlist')">Watchlist</button>
+                    <button class="nav-btn" onclick="showPage('trending')">Trending</button>
+                    <button class="nav-btn" onclick="showPage('profile')">Profile</button>
+                </nav>
+                <div class="header-controls">
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <span class="toggle-icon">🌙</span>
+                        <span class="toggle-label">Dark</span>
+                    </button>
+                    <button id="logoutBtn" class="nav-btn logout-btn" onclick="logout()" style="display: none;">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search movies by title, genre, or actor...">
+            <button class="search-btn" onclick="searchMovies()">Search</button>
+        </div>
+
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <h2 class="section-title">Trending Now</h2>
+            <div class="movie-grid" id="trendingGrid"></div>
+
+            <h2 class="section-title">Popular Movies</h2>
+            <div class="movie-grid" id="popularGrid"></div>
+
+            <h2 class="section-title">Recently Released</h2>
+            <div class="movie-grid" id="recentGrid"></div>
+        </div>
+
+        <!-- Recommendations Page -->
+        <div id="recommendations" class="page">
+            <h2 class="section-title">Recommended For You</h2>
+            <div class="movie-grid" id="recommendedGrid"></div>
+
+            <h2 class="section-title">Because You Watched...</h2>
+            <div class="movie-grid" id="becauseYouWatchedGrid"></div>
+        </div>
+
+        <!-- Watchlist Page -->
+        <div id="watchlist" class="page">
+            <h2 class="section-title">My Watchlist</h2>
+            <div class="movie-grid" id="watchlistGrid"></div>
+        </div>
+
+        <!-- Trending Page -->
+        <div id="trending" class="page">
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterContent('all')">All</button>
+                <button class="filter-tab" onclick="filterContent('Movie')">Movies</button>
+                <button class="filter-tab" onclick="filterContent('Series')">Series</button>
+                <button class="filter-tab" onclick="filterContent('Animation')">Animation</button>
+                <button class="filter-tab" onclick="filterContent('Anime')">Anime</button>
+                <button class="filter-tab" onclick="filterContent('English')">English</button>
+                <button class="filter-tab" onclick="filterContent('Hindi')">Hindi</button>
+                <button class="filter-tab" onclick="filterContent('South Indian')">South Indian</button>
+                <button class="filter-tab" onclick="filterContent('Iranian')">Iranian</button>
+                <button class="filter-tab" onclick="filterContent('Japanese')">Japanese</button>
+                <button class="filter-tab" onclick="filterContent('Korean')">Korean</button>
+            </div>
+            <div class="filter-row">
+                <h2 class="section-title">Browse by Year</h2>
+                <select id="yearFilter" class="form-select small" onchange="filterByYear(event)">
+                    <option value="all">All Years</option>
+                </select>
+                <select id="genreFilter" class="form-select small" onchange="filterByGenre(event)">
+                    <option value="all">All Genres</option>
+                </select>
+            </div>
+            <h2 class="section-title">All Content</h2>
+            <div class="movie-grid" id="trendingPageGrid"></div>
+            <h2 class="section-title">Iranian Spotlight</h2>
+            <div class="movie-grid" id="iranianGrid"></div>
+            <h2 class="section-title">Japanese Spotlight</h2>
+            <div class="movie-grid" id="japaneseGrid"></div>
+            <h2 class="section-title">Korean Spotlight</h2>
+            <div class="movie-grid" id="koreanGrid"></div>
+        </div>
+
+<div id="profile" class="page">
+    <!-- Profile Header Section -->
+    <div class="profile-header-section">
+        <div class="profile-hero-card">
+            <div class="profile-hero-bg">
+                <div class="profile-avatar-large">
+                    <span id="avatarLetterLarge">U</span>
+                </div>
+            </div>
+            <div class="profile-hero-content">
+                <div class="profile-name-section">
+                    <h1 id="profNameLarge">Movie Enthusiast</h1>
+                    <button class="edit-profile-btn" onclick="editProfile()" title="Edit Profile">
+                        <span class="edit-icon">✏️</span> Edit Profile
+                    </button>
+                </div>
+                <p id="profEmailLarge" class="profile-email">user@cinesphere.com</p>
+                <div class="profile-meta">
+                    <span class="profile-badge">
+                        <span class="badge-icon">🎭</span>
+                        Cinephile since <span id="profJoinYearLarge">2025</span>
+                    </span>
+                    <span class="profile-badge">
+                        <span class="badge-icon">⭐</span>
+                        <span id="userRating">Beginner</span> Reviewer
+                    </span>
+                </div>
+                <div class="profile-bio-section">
+                    <p id="profileBio" class="profile-bio">Welcome to my cinematic journey! I love discovering new films and sharing my thoughts about them.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Stats Dashboard -->
+    <div class="profile-stats-dashboard">
+        <div class="stats-grid">
+            <div class="stat-card stat-watchlist">
+                <div class="stat-icon">📋</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="countWatchlistLarge">0</div>
+                    <div class="stat-label">In Watchlist</div>
+                </div>
+                <div class="stat-trend" id="watchlistTrend">+2 this week</div>
+            </div>
+            <div class="stat-card stat-reviews">
+                <div class="stat-icon">✍️</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="countReviewsLarge">0</div>
+                    <div class="stat-label">Reviews Written</div>
+                </div>
+                <div class="stat-trend" id="reviewsTrend">Keep it up!</div>
+            </div>
+            <div class="stat-card stat-favorites">
+                <div class="stat-icon">❤️</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="countFavsLarge">0</div>
+                    <div class="stat-label">Favorite Movies</div>
+                </div>
+                <div class="stat-trend" id="favoritesTrend">Your top picks</div>
+            </div>
+            <div class="stat-card stat-watched">
+                <div class="stat-icon">👀</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="countWatched">0</div>
+                    <div class="stat-label">Movies Watched</div>
+                </div>
+                <div class="stat-trend" id="watchedTrend">This year</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Content Tabs -->
+    <div class="profile-tabs-section">
+        <div class="profile-tabs">
+            <button class="profile-tab active" onclick="switchProfileTab('overview')">Overview</button>
+            <button class="profile-tab" onclick="switchProfileTab('favorites')">Favorites</button>
+            <button class="profile-tab" onclick="switchProfileTab('watchlist')">Watchlist</button>
+            <button class="profile-tab" onclick="switchProfileTab('reviews')">Reviews</button>
+            <button class="profile-tab" onclick="switchProfileTab('activity')">Activity</button>
+            <button class="profile-tab" onclick="switchProfileTab('settings')">Settings</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="profile-overview" class="profile-tab-content active">
+            <div class="overview-grid">
+                <div class="overview-section">
+                    <h3 class="section-title-small">Recent Activity</h3>
+                    <div class="activity-feed" id="recentActivity">
+                        <div class="activity-item">
+                            <div class="activity-icon">🎬</div>
+                            <div class="activity-content">
+                                <p>Welcome to CineSphere! Start exploring movies and building your watchlist.</p>
+                                <span class="activity-time">Just now</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overview-section">
+                    <h3 class="section-title-small">Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="showPage('trending')">
+                            <span class="action-icon">🔍</span>
+                            Discover Movies
+                        </button>
+                        <button class="action-btn" onclick="addFavoritePrompt()">
+                            <span class="action-icon">❤️</span>
+                            Add Favorite
+                        </button>
+                        <button class="action-btn" onclick="showPage('recommendations')">
+                            <span class="action-icon">🎯</span>
+                            Get Recommendations
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorites Tab -->
+        <div id="profile-favorites" class="profile-tab-content">
+            <div class="tab-header">
+                <h3 class="section-title-small">My Favorite Movies</h3>
+                <div class="tab-actions">
+                    <button class="nav-btn" onclick="addFavoritePrompt()">+ Add Movie</button>
+                    <button class="nav-btn secondary" id="editFavBtn" onclick="toggleFavoritesEdit()">Manage</button>
+                </div>
+            </div>
+            <div class="movie-grid" id="favoritesGridLarge"></div>
+        </div>
+
+        <!-- Watchlist Tab -->
+        <div id="profile-watchlist" class="profile-tab-content">
+            <div class="tab-header">
+                <h3 class="section-title-small">My Watchlist</h3>
+                <div class="tab-actions">
+                    <select id="watchlistSort" class="form-select small" onchange="sortWatchlist()">
+                        <option value="recent">Recently Added</option>
+                        <option value="title">Alphabetical</option>
+                        <option value="year">Year</option>
+                        <option value="genre">Genre</option>
+                    </select>
+                </div>
+            </div>
+            <div class="movie-grid" id="watchlistGridLarge"></div>
+        </div>
+
+        <!-- Reviews Tab -->
+        <div id="profile-reviews" class="profile-tab-content">
+            <div class="tab-header">
+                <h3 class="section-title-small">My Reviews</h3>
+                <div class="tab-actions">
+                    <select id="reviewsSort" class="form-select small" onchange="sortReviews()">
+                        <option value="recent">Most Recent</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="movie">Movie Title</option>
+                    </select>
+                </div>
+            </div>
+            <div class="reviews-list" id="reviewsListLarge"></div>
+        </div>
+
+        <!-- Activity Tab -->
+        <div id="profile-activity" class="profile-tab-content">
+            <div class="tab-header">
+                <h3 class="section-title-small">Activity History</h3>
+                <div class="tab-actions">
+                    <select id="activityFilter" class="form-select small" onchange="filterActivity()">
+                        <option value="all">All Activity</option>
+                        <option value="review">Reviews</option>
+                        <option value="watchlist">Watchlist</option>
+                        <option value="favorite">Favorites</option>
+                    </select>
+                </div>
+            </div>
+            <div class="activity-timeline" id="activityTimeline"></div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="profile-settings" class="profile-tab-content">
+            <div class="settings-grid">
+                <div class="settings-section">
+                    <h3 class="section-title-small">Account Settings</h3>
+                    <div class="settings-group">
+                        <div class="setting-item">
+                            <label class="setting-label">Display Name</label>
+                            <div class="setting-input-group">
+                                <input type="text" id="settingName" class="setting-input" placeholder="Your display name">
+                                <button class="setting-btn" onclick="updateSetting('name')">Update</button>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label class="setting-label">Email Address</label>
+                            <div class="setting-input-group">
+                                <input type="email" id="settingEmail" class="setting-input" readonly>
+                                <span class="setting-note">Contact support to change email</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label class="setting-label">Profile Bio</label>
+                            <div class="setting-input-group">
+                                <textarea id="settingBio" class="setting-textarea" rows="3" placeholder="Tell others about your movie taste..."></textarea>
+                                <button class="setting-btn" onclick="updateSetting('bio')">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3 class="section-title-small">Preferences</h3>
+                    <div class="settings-group">
+                        <div class="setting-item">
+                            <label class="setting-label">Favorite Genres</label>
+                            <div class="genre-tags" id="favoriteGenres">
+                                <span class="genre-tag" onclick="toggleGenre('Action')">Action</span>
+                                <span class="genre-tag" onclick="toggleGenre('Drama')">Drama</span>
+                                <span class="genre-tag" onclick="toggleGenre('Comedy')">Comedy</span>
+                                <span class="genre-tag" onclick="toggleGenre('Sci-Fi')">Sci-Fi</span>
+                                <span class="genre-tag" onclick="toggleGenre('Horror')">Horror</span>
+                                <span class="genre-tag" onclick="toggleGenre('Romance')">Romance</span>
+                                <span class="genre-tag" onclick="toggleGenre('Thriller')">Thriller</span>
+                                <span class="genre-tag" onclick="toggleGenre('Animation')">Animation</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label class="setting-label">Notification Preferences</label>
+                            <div class="toggle-switches">
+                                <div class="toggle-item">
+                                    <span>Email notifications for new recommendations</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="emailNotif" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-item">
+                                    <span>Weekly activity summary</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="weeklySummary" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3 class="section-title-small">Account Actions</h3>
+                    <div class="settings-group">
+                        <div class="danger-zone">
+                            <button class="danger-btn" onclick="confirmLogout()">Logout</button>
+                            <button class="danger-btn secondary" onclick="deleteAccount()">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Movie Detail Modal -->
+    <div id="movieModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="modal-grid">
+                <div class="modal-poster" id="modalPoster">🎬</div>
+                <div class="modal-details">
+                    <h2 id="modalTitle"></h2>
+                    <p><strong>Genre:</strong> <span id="modalGenre"></span></p>
+                    <p><strong>Year:</strong> <span id="modalYear"></span></p>
+                    <p><strong>Director:</strong> <span id="modalDirector"></span></p>
+                    <p><strong>Cast:</strong> <span id="modalCast"></span></p>
+                    <p><strong>Runtime:</strong> <span id="modalRuntime"></span></p>
+                    <p><strong>Streaming:</strong> <span id="modalStreaming"></span></p>
+                    <div class="rating">
+                        <span class="stars">⭐</span>
+                        <span id="modalRating"></span>
+                    </div>
+                    <p style="margin-top: 15px;" id="modalDescription"></p>
+                    
+                    <div class="action-btns">
+                        <button class="btn btn-primary" onclick="addToWatchlist()">Add to Watchlist</button>
+                        <button class="btn btn-secondary" onclick="removeFromWatchlist()">Remove</button>
+                    </div>
+
+                    <div class="rate-section">
+                        <p><strong>Rate this movie:</strong></p>
+                        <div class="star-rating" id="starRating">
+                            <span onclick="rateMovie(1)">★</span>
+                            <span onclick="rateMovie(2)">★</span>
+                            <span onclick="rateMovie(3)">★</span>
+                            <span onclick="rateMovie(4)">★</span>
+                            <span onclick="rateMovie(5)">★</span>
+                        </div>
+                        <!-- New: write a text review -->
+  <div class="review-form">
+    <p style="margin-top: 12px;"><strong>Write a review</strong></p>
+    <textarea id="reviewText"
+              rows="3"
+              placeholder="What did you think about this cinema?"></textarea>
+    <button type="button" onclick="submitReview()">
+      Submit Review
+    </button>
+  </div>
+</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="similar-movies">
+                <h2 class="section-title">Similar Movies</h2>
+                <div class="movie-grid" id="similarGrid"></div>
+            </div>
+        </div>
+    </div>
+
+<div id="authModal" class="modal">
+    <div class="modal-content auth-form">
+        <h2 id="authTitle">Login</h2>
+        <p id="authMessage" style="color: var(--accent); font-size: 13px; margin-bottom: 10px;"></p>
+        
+        <input type="email" id="authEmail" placeholder="Email Address" class="search-input" style="margin-bottom: 15px;">
+        <input type="password" id="authPassword" placeholder="Password" class="search-input" style="margin-bottom: 15px;">
+        
+        <div class="action-btns">
+            <button class="btn btn-primary" id="mainAuthBtn" onclick="handleAuth()">Login</button>
+            <button class="btn btn-secondary" id="toggleAuthBtn" onclick="toggleAuthMode()">Need an account? Sign Up</button>
+        </div>
+    </div>
+</div>
+    <script src="project1.js"></script>
+</body>
+</html>
